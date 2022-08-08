@@ -13,24 +13,43 @@ app.secret_key = 'random string'
 
 
 status_colors = {"Submitted" : "success", "APPLY" : "warning", "" : "secondary"}
+colored = False
+search_fields = {"company": "", "term": "", "status": ""}
 
 
-# Rishabh Prasad
-# initial index page of the website (no user should be logged in)
-@app.route('/')
+# initial page of the website with no filtering (all records)
+@app.route('/', methods=['POST', 'GET'])
 def begin():
-    session.clear() # clear the current session if there was a previously logged in user
+    # session.clear() clear the current session if there was a previously logged in user
+    # print(search_fields)
+    global search_fields
+    global colored
+    if request.method == 'POST':
+        colored = True if request.form.getlist('rows_colored') else False
     with sqlite3.connect('applications.db') as conn: # query for all application info
         app_info = pd.read_sql(
             """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview?', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
-                FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id """, 
+                FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id 
+                WHERE i.company LIKE '%{}%' AND i.term LIKE '%{}%' AND s.status LIKE '%{}%' """.format(search_fields["company"], search_fields["term"], search_fields["status"]), 
                 conn)
-    print(app_info)
-    app_data = app_info.to_dict('record')
-    print(app_data)
-    return render_template('index.html', app_data=app_data, colored=True, field_colors=status_colors, field="Status")
+    app_data = app_info.to_dict('records')
+    return render_template('index.html', app_data=app_data, search_fields=search_fields, colored=colored, field_colors=status_colors, field="Status")
 
-# Christopher Lynch
+
+# handles any search criteria
+@app.route('/search', methods = ['POST'])
+def search():
+    if request.method == 'POST':    # gather info from HTML text boxes
+        global search_fields
+        search_fields["company"] = request.form["company"]
+        search_fields["term"] = request.form['term']
+        search_fields["status"] = request.form['status']
+        return redirect(url_for('begin'))
+
+
+
+
+
 # already logged in
 # @app.route('/home') # This function is for the home page of the website once the user has logged in
 # def home():
