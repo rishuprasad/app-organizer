@@ -27,17 +27,23 @@
 
     <div class="container">
       <form class="form-inline" action="/search" method="POST">
-        <div class="form-group">
-          <label>Company</label>
-          <input name="company" type="text" class="form-control" placeholder="" value="{{search_fields['company']}}">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="col-sm-4 col-form-label">Company</label>
+            <input name="company" type="text" class="form-control" placeholder="" value="{{search_fields['company']}}">
+          </div>
         </div>
-        <div class="form-group">
-          <label>Term</label>
-          <input name="term" type="text" class="form-control" placeholder="" value="{{search_fields['term']}}">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="col-sm-4 col-form-label">Term</label>
+            <input name="term" type="text" class="form-control" placeholder="" value="{{search_fields['term']}}">
+          </div>
         </div>
-        <div class="form-group">
-          <label>Status</label>
-          <input name="status" type="text" class="form-control" placeholder="" value="{{search_fields['status']}}">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="col-sm-4 col-form-label">Status</label>
+            <input name="status" type="text" class="form-control" placeholder="" value="{{search_fields['status']}}">
+          </div>
         </div>
         <br>
         <button type="submit" class="btn btn-default">Search</button>
