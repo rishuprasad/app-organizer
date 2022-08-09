@@ -29,15 +29,15 @@
       <form class="form-inline" action="/search" method="POST">
         <div class="form-group">
           <label>Company</label>
-          <input name="company" type="text" class="form-control" placeholder="" value="{{search_fields['company']}}">
+          <input name="company" type="text" class="form-control" placeholder="" >
         </div>
         <div class="form-group">
           <label>Application ID</label>
-          <input name="app_id" type="text" class="form-control" placeholder="" value="{{search_fields['app_id']}}">
+          <input name="app_id" type="text" class="form-control" placeholder="" value="">
         </div>
         <div class="form-group">
           <label>Role</label>
-          <input name="role" type="text" class="form-control" placeholder="" value="{{search_fields['role']}}">
+          <input name="role" type="text" class="form-control" placeholder="" value="">
         </div>
         <div class="form-group">
           <label>Term</label>
@@ -72,19 +72,6 @@
     
     <div class="container table-responsive">
       <table class="table table-hover">
-        <caption>
-          <form id="colored_checkbox" action="/" method="POST">
-            <div class="checkbox">
-              <label>
-                {% if colored %}
-                <input name="rows_colored" type="checkbox" onchange="document.getElementById('colored_checkbox').submit()" checked> Color rows
-                {% else %}
-                <input name="rows_colored" type="checkbox" onchange="document.getElementById('colored_checkbox').submit()"> Color rows
-                {% endif %}
-              </label>
-            </div>
-          </form>
-        </caption>
         <thead class="thead-light">
             <tr>
                 {% for col in app_data[0] %}
@@ -94,11 +81,7 @@
         </thead>
         <tbody> 
             {% for record in app_data %}
-              {% if colored %}
-              <tr class="table-{{field_colors[record[field]]}}">
-              {% else %}
               <tr>
-              {% endif %}
                 {% for col in record %}
                   {% if loop.index == 1 %}
                     <th scope="row">{{record[col]}}</th>
