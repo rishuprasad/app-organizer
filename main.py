@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = 'random string'
 
 
-status_colors = {"Submitted" : "success", "APPLY" : "warning", "" : "secondary"}
+status_colors = {"APPLY" : "warning", "Submitted" : "success", "In Progress" : "secondary"}
 colored = False
 search_fields = {"company": "", "term": "", "status": ""}
 term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", }
@@ -22,7 +22,6 @@ status_options = {"status_apply": "APPLY", "status_submit": "Submitted", "status
 @app.route('/', methods=['POST', 'GET'])
 def begin():
     # session.clear() clear the current session if there was a previously logged in user
-    # print(search_fields)
     global search_fields
     global colored
     if request.method == 'POST':
@@ -78,7 +77,6 @@ def insert_page():
 @app.route('/insert_new', methods=['POST', 'GET'])
 def insert():
     if request.method == 'POST':    # gather info from HTML text boxes
-        print(request.form)
         app_id = request.form["app_id"]
         company = request.form["company"].title()
         role = request.form["role"]
