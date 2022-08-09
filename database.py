@@ -16,10 +16,10 @@ conn.execute('''CREATE TABLE IF NOT EXISTS status
             (app_id VARCHAR(50) PRIMARY KEY NOT NULL,
             date_applied VARCHAR(50) NOT NULL,
             status VARCHAR(50) NOT NULL,
-            first VARCHAR(50) NOT NULL,
-            second VARCHAR(50) NOT NULL,
-            extra VARCHAR(50) NOT NULL,
-            offer VARCHAR(50) NOT NULL)''')
+            first VARCHAR(50),
+            second VARCHAR(50),
+            extra VARCHAR(50),
+            offer VARCHAR(50) )''')
 
 
 conn.close() 

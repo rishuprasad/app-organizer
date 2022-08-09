@@ -76,10 +76,21 @@ def insert_page():
 # inserts new records
 @app.route('/insert_new', methods=['POST', 'GET'])
 def insert():
-    print(request.method)
-    # if request.method == 'POST':    # gather info from HTML text boxes
-    print(request.form)
-    return redirect(url_for('insert_page'))
+    if request.method == 'POST':    # gather info from HTML text boxes
+        print(request.form)
+        app_id = request.form["app_id"]
+        company = request.form["company"]
+        role = request.form["role"]
+        term = request.form["term"]
+        date_applied = request.form["date_applied"]
+        status = request.form["status"]
+        with sqlite3.connect('applications.db') as conn: # query for all application info
+            cur = conn.cursor()
+            cur.execute('INSERT INTO info (app_id, company, role, term) VALUES (?, ?, ?, ?)', (app_id, company, role, term))                
+            conn.commit()
+            cur.execute('INSERT INTO status (app_id, date_applied, status) VALUES (?, ?, ?)', (app_id, date_applied, status))                
+            conn.commit()
+        return redirect(url_for('insert_page'))
 
 
 
