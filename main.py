@@ -15,7 +15,8 @@ app.secret_key = 'random string'
 status_colors = {"Submitted" : "success", "APPLY" : "warning", "" : "secondary"}
 colored = False
 search_fields = {"company": "", "term": "", "status": ""}
-
+term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", }
+status_options = {"status_apply": "APPLY", "status_submit": "Submitted", "status_in_progress": "In Progress", "status_reject": "Rejected"}
 
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
@@ -79,11 +80,11 @@ def insert():
     if request.method == 'POST':    # gather info from HTML text boxes
         print(request.form)
         app_id = request.form["app_id"]
-        company = request.form["company"]
+        company = request.form["company"].title()
         role = request.form["role"]
-        term = request.form["term"]
+        term = term_options[request.form["term"]]
         date_applied = request.form["date_applied"]
-        status = request.form["status"]
+        status = status_options[request.form["status"]]
         with sqlite3.connect('applications.db') as conn: # query for all application info
             cur = conn.cursor()
             cur.execute('INSERT INTO info (app_id, company, role, term) VALUES (?, ?, ?, ?)', (app_id, company, role, term))                
