@@ -23,6 +23,10 @@
       <button type="submit" class="btn btn-default">Insert</button>
     </form>
 
+    <form class="form-inline" action="/to_delete" method="GET">
+      <button type="submit" class="btn btn-default">Delete</button>
+    </form>
+
     <hr>
 
     <div class="container">
@@ -86,13 +90,7 @@
                   {% if loop.index == 1 %}
                     <th scope="row">{{record[col]}}</th>
                   {% else %}
-                    {% if loop.index == 2%}
-                    <td>
-                      <button>Delete</button>
-                    </td>
-                    {% else %}
                     <td>{{record[col]}}</td>
-                    {% endif %}
                   {% endif %}
                 {% endfor %}
               </tr>

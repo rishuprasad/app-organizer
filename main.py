@@ -93,6 +93,23 @@ def insert():
         return redirect(url_for('insert_page'))
 
 
+# page for inserting new apps
+@app.route('/delete', methods=['POST', 'GET'])
+def delete_page():
+    with sqlite3.connect('applications.db') as conn: # query for all application info
+        app_info = pd.read_sql(
+            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview?', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
+                FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id """, 
+                conn)
+    app_data = app_info.to_dict('records')
+    return render_template('delete.html', app_data=app_data)
+
+
+# route to delete page
+@app.route('/to_delete', methods = ['GET'])
+def to_delete():
+    if request.method == "GET":
+        return redirect(url_for('delete_page'))
 
 
 # already logged in
