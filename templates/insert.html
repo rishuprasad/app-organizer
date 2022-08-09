@@ -26,7 +26,7 @@
     <hr>
 
     <div class="container">
-      <form class="form-inline" action="/search" method="POST">
+      <form class="form-inline" action="/insert_new" method="POST">
         <div class="form-group">
           <label>Company</label>
           <input name="company" type="text" class="form-control" placeholder="" >
@@ -40,8 +40,11 @@
           <input name="role" type="text" class="form-control" placeholder="" value="">
         </div>
         <div class="form-group">
-          <label>Term</label>
-          <select name="term" class="form-control" placeholder="">
+          <!-- <div class="input-group"> -->
+          <!-- <label>Term</label> -->
+          <span class="input-group-addon">Term</span>
+          <select name="term" class="form-control">
+            <option value="none" selected disabled hidden></option>
             <option value="fall_2022">Fall 2022</option>
             <option value="winter_2023">Winter 2023</option>
             <option value="spring_2023">Spring 2023</option>
@@ -49,18 +52,18 @@
             <option value="fall_2023">Fall 2023</option>
           </select>
         </div>
-        <div class="input-group date">
+        <div class="form-group date">
           <label>Date Applied</label>
           <input name="date_applied" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
         </div>
         <div class="form-group">
           <label>Status</label>
-          <select name="status" class="form-control" placeholder="">
-            <option value="fall_2022">Fall 2022</option>
-            <option value="winter_2023">Winter 2023</option>
-            <option value="spring_2023">Spring 2023</option>
-            <option value="summer_2023">Summer 2023</option>
-            <option value="fall_2023">Fall 2023</option>
+          <select name="status" class="form-control">
+            <option value="none" selected disabled hidden></option>
+            <option value="status_apply">APPLY</option>
+            <option value="status_submit">Submitted</option>
+            <option value="status_in_progress">In Progress</option>
+            <option value="status_reject">Rejected</option>
           </select>
         </div>
         <br>
