@@ -46,8 +46,23 @@ def search():
         search_fields["status"] = request.form['status']
         return redirect(url_for('begin'))
 
+# route to search page
+@app.route('/to_search', methods = ['GET'])
+def to_search():
+    if request.method == "GET":
+        return redirect(url_for('begin'))
 
 
+# route to insert page
+@app.route('/to_insert', methods = ['GET'])
+def to_insert():
+    if request.method == "GET":
+        return redirect(url_for('insert'))
+
+# page for inserting new apps
+@app.route('/insert', methods = ['GET'])
+def insert():
+    pass
 
 
 # already logged in
