@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
   </head>
   <body>
     <div class="container">
@@ -27,42 +32,63 @@
 
     <div class="container">
       <form class="form-inline" action="/insert_new" method="POST">
-        <div class="form-group">
-          <label>Company</label>
-          <input name="company" type="text" class="form-control" placeholder="" >
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="date" class="col-sm-4 col-form-label">Company</label>
+            <input name="company" type="text" class="form-control" placeholder="" >
+          </div>
         </div>
-        <div class="form-group">
-          <label>Application ID</label>
-          <input name="app_id" type="text" class="form-control" placeholder="" value="">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="date" class="col-sm-4 col-form-label">Application ID</label>
+            <input name="app_id" type="text" class="form-control" placeholder="" value="">
+          </div>
         </div>
-        <div class="form-group">
-          <label>Role</label>
-          <input name="role" type="text" class="form-control" placeholder="" value="">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="date" class="col-sm-4 col-form-label">Role</label>
+            <input name="role" type="text" class="form-control" placeholder="" value="">
+          </div>
         </div>
-        <div class="form-group">
-          <span class="input-group-addon">Term</span>
-          <select name="term" class="form-control">
-            <option value="none" selected disabled hidden></option>
-            <option value="fall_2022">Fall 2022</option>
-            <option value="winter_2023">Winter 2023</option>
-            <option value="spring_2023">Spring 2023</option>
-            <option value="summer_2023">Summer 2023</option>
-            <option value="fall_2023">Fall 2023</option>
-          </select>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <span class="input-group-addon">Term</span>
+            <select name="term" class="form-control">
+              <option value="none" selected disabled hidden></option>
+              <option value="fall_2022">Fall 2022</option>
+              <option value="winter_2023">Winter 2023</option>
+              <option value="spring_2023">Spring 2023</option>
+              <option value="summer_2023">Summer 2023</option>
+              <option value="fall_2023">Fall 2023</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group date">
-          <label>Date Applied</label>
+        <!-- <div class="form-group date">
+          <label for="date" class="col-sm-1 col-form-label">Date Applied</label>
           <input name="date_applied" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        </div> -->
+        <div class="col-sm-4">
+          <label for="date" class="col-sm-4 col-form-label">Date</label>
+          <div class="input-group date" id="datepicker">
+            <input type="text" class="form-control">
+            <span class="input-group-append">
+                <span class="input-group-text bg-white d-block">
+                    <i class="fa fa-calendar"></i>
+                </span>
+            </span>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select name="status" class="form-control">
-            <option value="none" selected disabled hidden></option>
-            <option value="status_apply">APPLY</option>
-            <option value="status_submit">Submitted</option>
-            <option value="status_in_progress">In Progress</option>
-            <option value="status_reject">Rejected</option>
-          </select>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="date" class="col-sm-4 col-form-label">Status</label>
+            <select name="status" class="form-control">
+              <option value="none" selected disabled hidden></option>
+              <option value="status_apply">APPLY</option>
+              <option value="status_submit">Submitted</option>
+              <option value="status_in_progress">In Progress</option>
+              <option value="status_reject">Rejected</option>
+            </select>
+          </div>
         </div>
         <br>
         <button type="submit" class="btn btn-default">Insert</button>
@@ -96,11 +122,36 @@
       </table>
     </div>
 
-  
+    <div class="md-form md-outline input-with-post-icon datepicker" id="formatsSection">
+      <input placeholder="Select date" type="text" id="formats-example" class="form-control">
+      <i class="fas fa-calendar input-prefix" tabindex=0></i>
+    </div>
 
+    <label for="date" class="col-sm-1 col-form-label">Date</label>
+    <div class="col-sm-4">
+        <div class="input-group date" id="datepicker">
+            <input type="text" class="form-control">
+            <span class="input-group-append">
+                <span class="input-group-text bg-white d-block">
+                    <i class="fa fa-calendar"></i>
+                </span>
+            </span>
+        </div>
+    </div>
 
 
     </div>
+
+    <script type="text/javascript">
+      $(function() {
+            $('#datepicker').datepicker({
+        //       format: 'You selecte!d: dddd, dd mmm, yyyy',
+        // formatSubmit: 'yyyy/mm/dd',
+        // hiddenPrefix: 'prefix__',
+        // hiddenSuffix: '__suffix'
+            });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
   </body>
