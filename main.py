@@ -18,6 +18,7 @@ search_fields = {"company": "", "term": "", "status": ""}
 term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", }
 status_options = {"status_apply": "APPLY", "status_submit": "Submitted", "status_in_progress": "In Progress", "status_reject": "Rejected"}
 
+
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
 def begin():

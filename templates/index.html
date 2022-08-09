@@ -81,11 +81,18 @@
               {% else %}
               <tr>
               {% endif %}
+                
                 {% for col in record %}
                   {% if loop.index == 1 %}
                     <th scope="row">{{record[col]}}</th>
                   {% else %}
+                    {% if loop.index == 2%}
+                    <td>
+                      <button>Delete</button>
+                    </td>
+                    {% else %}
                     <td>{{record[col]}}</td>
+                    {% endif %}
                   {% endif %}
                 {% endfor %}
               </tr>
