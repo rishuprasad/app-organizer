@@ -19,6 +19,8 @@ term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_
 status_options = {"status_apply": "APPLY", "status_submit": "Submitted", "status_in_progress": "In Progress", "status_reject": "Rejected"}
 tbl_info = {"Application ID": 'app_id', "Company": 'company', "Role": 'role', "Term": 'term'}
 tbl_status = {"Application ID": "app_id", "Date Applied": "date_applied", "Status": "status", "First Interview": "`first`", "Second Interview": "second", "Extra Interviews": "extra", "Offer": "offer"}
+blank_val = "-"
+
 
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
@@ -79,12 +81,12 @@ def insert_page():
 @app.route('/insert_new', methods=['POST', 'GET'])
 def insert():
     if request.method == 'POST':    # gather info from HTML text boxes
-        app_id = request.form["app_id"]
-        company = request.form["company"]
-        role = request.form["role"]
-        term = term_options[request.form["term"]]
-        date_applied = request.form["date_applied"]
-        status = status_options[request.form["status"]]
+        app_id = blank_val if not request.form.getlist("app_id") else request.form["app_id"]
+        company = blank_val if not request.form.getlist("company") else request.form["company"]
+        role = blank_val if not request.form.getlist("role") else request.form["role"]
+        term = blank_val if not request.form.getlist("term") else request.form["term"]
+        date_applied = blank_val if not request.form.getlist("date_applied") else request.form["date_applied"] 
+        status = blank_val if not request.form.getlist("status") else status_options[request.form["status"]]
         with sqlite3.connect('applications.db') as conn: # query for all application info
             cur = conn.cursor()
             cur.execute('INSERT INTO info (app_id, company, role, term) VALUES (?, ?, ?, ?)', (app_id, company, role, term))                
