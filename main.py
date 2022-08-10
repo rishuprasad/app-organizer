@@ -17,7 +17,8 @@ colored = False
 search_fields = {"company": "", "term": "", "status": ""}
 term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", }
 status_options = {"status_apply": "APPLY", "status_submit": "Submitted", "status_in_progress": "In Progress", "status_reject": "Rejected"}
-
+tbl_info = {"Application ID": 'app_id', "Company": 'company', "Role": 'role', "Term": 'term'}
+tbl_status = {"Application ID": "app_id", "Date Applied": "date_applied", "Status": "status", "First Interview": "`first`", "Second Interview": "second", "Extra Interviews": "extra", "Offer": "offer"}
 
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
@@ -29,7 +30,7 @@ def begin():
         colored = True if request.form.getlist('rows_colored') else False
     with sqlite3.connect('applications.db') as conn: # query for all application info
         app_info = pd.read_sql(
-            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview?', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
+            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
                 FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id 
                 WHERE i.company LIKE '%{}%' AND i.term LIKE '%{}%' AND s.status LIKE '%{}%' """.format(search_fields["company"], search_fields["term"], search_fields["status"]), 
                 conn)
@@ -67,7 +68,7 @@ def to_insert():
 def insert_page():
     with sqlite3.connect('applications.db') as conn: # query for all application info
         app_info = pd.read_sql(
-            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview?', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
+            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
                 FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id """, 
                 conn)
     app_data = app_info.to_dict('records')
@@ -79,7 +80,7 @@ def insert_page():
 def insert():
     if request.method == 'POST':    # gather info from HTML text boxes
         app_id = request.form["app_id"]
-        company = request.form["company"].title()
+        company = request.form["company"]
         role = request.form["role"]
         term = term_options[request.form["term"]]
         date_applied = request.form["date_applied"]
@@ -93,16 +94,45 @@ def insert():
         return redirect(url_for('insert_page'))
 
 
-# page for inserting new apps
+# page for deleting app records
 @app.route('/delete', methods=['POST', 'GET'])
 def delete_page():
     with sqlite3.connect('applications.db') as conn: # query for all application info
         app_info = pd.read_sql(
-            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview?', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
+            """ SELECT i.company as Company, i.app_id as 'Application ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as 'Offer' 
                 FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id """, 
                 conn)
     app_data = app_info.to_dict('records')
     return render_template('delete.html', app_data=app_data)
+
+
+# delete an entry
+@app.route('/delete_entry', methods=['GET'])
+def delete():
+    if request.method == "GET":
+        record = request.args.get('record')
+        record = record.replace('\'', '')
+        record = record.replace(': ', ':')
+        record = record[1:-1].split(',')
+        record = [(i.split(':')[0].strip(), i.split(':')[1].strip()) for i in record]
+        query1 = "DELETE FROM info WHERE "
+        query2 = "DELETE FROM status WHERE "
+        for field in record:
+            if field[1] == "None":
+                continue
+            if field[0] in tbl_info:
+                query1 += "\"" + tbl_info[field[0]] + "\"" + "=" + "\"" + field[1] + "\" AND "
+            if field[0] in tbl_status:
+                query2 += "\"" + tbl_status[field[0]] + "\"" + "=" + "\"" + field[1] + "\" AND "
+        query1 += "0=0"
+        query2 += "0=0"
+        with sqlite3.connect('applications.db') as conn: # query for all application info
+                cur = conn.cursor()
+                cur.execute(query1)                
+                conn.commit()
+                cur.execute(query2)                
+                conn.commit()
+    return redirect(url_for('delete_page'))
 
 
 # route to delete page

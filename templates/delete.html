@@ -48,7 +48,9 @@
             {% for record in app_data %}
               <tr>
                 <td>
-                  <button>X</button>
+                  <a href="/delete_entry?record={{record}}">
+                    X
+                  </a>
                 </td>
                 {% for col in record %}
                   {% if loop.index == 1 %}
