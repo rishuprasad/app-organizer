@@ -1,0 +1,10 @@
+table.table-transparent{
+    border:1px blue;
+    margin-top:20px;
+  }
+table.table-transparent > thead > tr > th{
+    border:1px blue;
+}
+table.table-transparent > tbody > tr > td{
+    border:1px blue;
+}
