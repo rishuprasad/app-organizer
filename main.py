@@ -145,10 +145,10 @@ def to_delete():
         return redirect(url_for('delete_page'))
 
 
-# page for deleting app records
+# page for individual app info
 @app.route('/app_page', methods=['POST', 'GET'])
 def app_page():
-    app_id = request.args.get('app_id') # get the product ID from HTML
+    app_id = request.args.get('app_id') # get the app ID from HTML and request
     with sqlite3.connect('applications.db') as conn: # query for all application info
         app_info = pd.read_sql(
             """ SELECT {} 
@@ -158,6 +158,17 @@ def app_page():
     app_list = app_info.to_dict('records')[0]
     print(app_list)
     return render_template('app_page.html', app_list=app_list)
+
+@app.route('/delete_from_info', methods=['POST'])
+def delete_from_info():
+    if request.method == 'POST':
+        app_id = request.args.get('app_id')
+        with sqlite3.connect('applications.db') as conn:
+            cur = conn.cursor()
+            cur.execute("DELETE FROM status WHERE app_id = ?", (app_id, )) # delete status contents based on app ID
+            cur.execute("DELETE FROM info WHERE app_id = ?", (app_id, )) # delete info contents based on app ID
+        conn.close()
+    return redirect(url_for('begin'))
 
 
 # already logged in
