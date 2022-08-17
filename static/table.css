@@ -1,10 +1,25 @@
-table.table-transparent{
+/* table.table-transparent{
     border:1px blue;
     margin-top:20px;
-  }
-table.table-transparent > thead > tr > th{
+  } */
+/* table.table-transparent > thead > tr > th{
     border:1px blue;
 }
 table.table-transparent > tbody > tr > td{
     border:1px blue;
+} */
+thead.thead-transparent {
+    border-color: blue
+}
+tbody.tbody-transparent {
+    border-color: blue
+}
+tr.tr-transparent {
+    border-color: blue
+}
+th.th-transparent {
+    border-color: blue
+}
+td.td-transparent {
+    border-color: blue
 }
