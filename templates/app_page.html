@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Application Organizer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+      
+    <hr>
+
+    <h1 class="page-header">Application Organizer</h1>
+
+    <br>
+      
+    <form class="form-inline" action="/to_search" method="GET">
+      <button type="submit" class="btn btn-default">Search</button>
+    </form>
+
+    <form class="form-inline" action="/to_insert" method="GET">
+      <button type="submit" class="btn btn-default">Insert</button>
+    </form>
+
+    <form class="form-inline" action="/to_delete" method="GET">
+      <button type="submit" class="btn btn-default">Delete</button>
+    </form>
+
+    <hr>
+
+
+    <div class="container">
+      <h2 class="page-header">{{app_list["company"]}}</h2>
+      <h6 class="page-header">{{app_list["app_id"]}}</h3>
+      <table>
+        
+      </table>
+      Role: {{app_list["role"]}}
+      Term: {{app_list["term"]}}
+      Date Applied: {{app_list["date_applied"]}}
+      Status: {{app_list["status"]}}
+      First: {{app_list["first"]}}
+      Second: {{app_list["second"]}}
+      Extra: {{app_list["extra"]}}
+      Offer: {{app_list["offer"]}}
+    </div>
+
+
+
+
+    
+
+
+
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  </body>
+</html>

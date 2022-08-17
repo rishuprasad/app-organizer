@@ -90,7 +90,13 @@
                   {% if loop.index == 1 %}
                     <th scope="row">{{record[col]}}</th>
                   {% else %}
-                    <td>{{record[col]}}</td>
+                    {% if col == "ID" %}
+                      <td>
+                        <a href="/app_page?app_id={{record[col]}}">{{record[col]}}</a>
+                      </td>
+                    {% else %}
+                      <td>{{record[col]}}</td>
+                    {% endif %}
                   {% endif %}
                 {% endfor %}
               </tr>
