@@ -22,7 +22,7 @@ tbl_status = {"Application ID": "app_id", "Date Applied": "date_applied", "Statu
 blank_val = "-"
 info_columns = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status"
 specific_app_cols = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as Offer"
-edit_fields = {"First Interview": ("None", "Scheduled", "Completed"), "Second Interview": ("None", "Scheduled", "Completed"), "Extra Interviews": ("None", "Scheduled", "Completed"), "Offer": ("None", "Accepted", "Rejected")}
+edit_fields = {"First Interview": ("Scheduled", "Completed"), "Second Interview": ("Scheduled", "Completed"), "Extra Interviews": ("Scheduled", "Completed"), "Offer": ("Accepted", "Rejected")}
 
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
@@ -130,7 +130,7 @@ def delete():
                 query2 += "\"" + tbl_status[field[0]] + "\"" + "=" + "\"" + field[1] + "\" AND "
         query1 += "0=0"
         query2 += "0=0"
-        with sqlite3.connect('applications.db') as conn: # query for all application info
+        with sqlite3.connect('applications.db') as conn: # delete all associated info for the app_id
                 cur = conn.cursor()
                 cur.execute(query1)                
                 conn.commit()
@@ -150,6 +150,7 @@ def to_delete():
 @app.route('/app_page', methods=['POST', 'GET'])
 def app_page():
     app_id = request.args.get('app_id') # get the app ID from HTML and request
+    print(app_id)
     with sqlite3.connect('applications.db') as conn: # query for all application info
         app_info = pd.read_sql(
             """ SELECT {} 
@@ -161,7 +162,7 @@ def app_page():
     return render_template('app_page.html', app_list=app_list, edit=False)
 
 
-# page for individual app info
+# page for editing an app
 @app.route('/to_edit', methods=['POST'])
 def edit_page():
     if request.method == 'POST':
@@ -174,6 +175,24 @@ def edit_page():
                     conn)
         app_list = app_info.to_dict('records')[0]
     return render_template('app_page.html', app_list=app_list, edit=True, edit_fields=edit_fields)
+
+
+# edit an app's info directly
+@app.route('/edit', methods=['POST'])
+def edit():
+    if request.method == 'POST':
+        app_id = request.args.get('app_id') # get the app ID from HTML and request
+        first = request.form["First Interview"]
+        second = request.form["Second Interview"]
+        extra = request.form["Extra Interviews"]
+        offer = request.form["Offer"]
+        with sqlite3.connect('applications.db') as conn: # update status table with relevant selections
+            cur = conn.cursor()
+            cur.execute(""" UPDATE status as s 
+                    SET first='{}', second='{}', extra='{}', offer='{}'
+                    WHERE s.app_id = '{}' """.format(first, second, extra, offer, app_id))                
+            conn.commit()
+    return redirect(url_for('app_page', app_id=app_id))
 
 
 @app.route('/delete_from_info', methods=['POST'])
