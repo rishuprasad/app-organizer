@@ -41,6 +41,39 @@
             <th scope="col"></th>
           </tr>
         </thead>
+        {% if edit %}
+        <tbody> 
+          <form class="form-inline" action="/insert_new" method="POST">
+          {% for field in app_list %}
+            {% if loop.index >= 3 %}
+              {% if field not in edit_fields %}
+                <tr>
+                  <td>{{field}}</td>
+                  <td>{{app_list[field]}}</td>
+                </tr>
+              {% else %}
+              <tr>
+                <td>{{field}}</td>
+                <td>
+                  <div class="col-sm-4">
+                  <select name="term" class="form-control">
+                  <option value="none" selected disabled hidden></option>
+                  <option value="fall_2022">Fall 2022</option>
+                  <option value="winter_2023">Winter 2023</option>
+                  <option value="spring_2023">Spring 2023</option>
+                  <option value="summer_2023">Summer 2023</option>
+                  <option value="fall_2023">Fall 2023</option>
+                  </select>
+                  </div>
+                </td>
+              </tr>
+              {% endif %}
+            {% else %}
+            {% endif %}
+          {% endfor %}
+          </form>
+        </tbody>
+        {% else %}
         <tbody> 
           {% for field in app_list %}
             {% if loop.index >= 3 %}
@@ -52,11 +85,12 @@
             {% endif %}
           {% endfor %}
         </tbody>
+        {% endif %}
       </table>
     </div>
 
     <div class="container">
-      <form class="form-inline" action="/to_edit" method="GET">
+      <form class="form-inline" action="/to_edit?app_id={{app_list['ID']}}" method="POST">
         <button type="submit" class="btn btn-default">Edit</button>
       </form>
       <form class="form-inline" action="/delete_from_info?app_id={{app_list['ID']}}" method="POST">

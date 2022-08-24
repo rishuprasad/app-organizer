@@ -22,6 +22,7 @@ tbl_status = {"Application ID": "app_id", "Date Applied": "date_applied", "Statu
 blank_val = "-"
 info_columns = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status"
 specific_app_cols = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as Offer"
+edit_fields = {"First Interview": ("None", "Scheduled", "Completed"), "Second Interview": ("None", "Scheduled", "Completed"), "Extra Interviews": ("None", "Scheduled", "Completed"), "Offer": ("None", "Accepted", "Rejected")}
 
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
@@ -156,8 +157,24 @@ def app_page():
                 WHERE i.app_id = '{}' AND s.app_id = '{}' """.format(specific_app_cols, app_id, app_id), 
                 conn)
     app_list = app_info.to_dict('records')[0]
-    print(app_list)
-    return render_template('app_page.html', app_list=app_list)
+    print(app_info.to_dict('records'))
+    return render_template('app_page.html', app_list=app_list, edit=False)
+
+
+# page for individual app info
+@app.route('/to_edit', methods=['POST'])
+def edit_page():
+    if request.method == 'POST':
+        app_id = request.args.get('app_id') # get the app ID from HTML and request
+        with sqlite3.connect('applications.db') as conn: # query for all application info
+            app_info = pd.read_sql(
+                """ SELECT {} 
+                    FROM status as s JOIN info as i ON i.app_id = s.app_id 
+                    WHERE i.app_id = '{}' AND s.app_id = '{}' """.format(specific_app_cols, app_id, app_id), 
+                    conn)
+        app_list = app_info.to_dict('records')[0]
+    return render_template('app_page.html', app_list=app_list, edit=True, edit_fields=edit_fields)
+
 
 @app.route('/delete_from_info', methods=['POST'])
 def delete_from_info():
