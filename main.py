@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = 'random string'
 
 
-status_colors = {"APPLY" : "warning", "Submitted" : "success", "In Progress" : "secondary"}
+status_colors = {"NTA" : "danger", "Submitted" : "primary", "Interviewing" : "warning", "Rejected" : "info", "Offer" : "success"}
 colored = False
 search_fields = {"company": "", "term": "", "status": ""}
 term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", }
@@ -158,7 +158,6 @@ def app_page():
                 WHERE i.app_id = '{}' AND s.app_id = '{}' """.format(specific_app_cols, app_id, app_id), 
                 conn)
     app_list = app_info.to_dict('records')[0]
-    print(app_info.to_dict('records'))
     return render_template('app_page.html', app_list=app_list, edit=False)
 
 
@@ -192,9 +191,46 @@ def edit():
                     SET first='{}', second='{}', extra='{}', offer='{}'
                     WHERE s.app_id = '{}' """.format(first, second, extra, offer, app_id))                
             conn.commit()
+        update_status(app_id)
     return redirect(url_for('app_page', app_id=app_id))
 
 
+# updates status based on interviewing status
+def update_status(app_id):
+    with sqlite3.connect('applications.db') as conn: # query for all application info
+        app_status = pd.read_sql(
+            """ SELECT s.first, s.second, s.extra, s.offer 
+                FROM status as s
+                WHERE s.app_id = '{}' """.format(app_id, ), 
+                conn)
+        app_date = pd.read_sql(
+             """ SELECT s.date_applied 
+                FROM status as s
+                WHERE s.app_id = '{}' """.format(app_id, ), 
+                conn)
+    app_list = app_status.to_dict('records')[0]
+    app_date = app_date.to_dict('records')[0]
+    status_update = ""
+    if app_list['offer'] == "Extended" or app_list['offer'] == "Accepted":
+        status_update = "Offer"
+    elif app_list['offer'] == "Rejected":
+        status_update = "Rejected"
+    elif all([value != 'None' for value in app_list.values()]):
+        status_update = "Interviewing"
+    elif app_date['date_applied'] != "":
+        status_update = "Submitted"
+    else:
+        status_update = "NTA"
+    with sqlite3.connect('applications.db') as conn: # update status table with relevant selections
+            cur = conn.cursor()
+            cur.execute(""" UPDATE status as s 
+                    SET status='{}'
+                    WHERE s.app_id = '{}' """.format(status_update, app_id, ))                
+            conn.commit()
+    
+
+
+# deletes application from all tables
 @app.route('/delete_from_info', methods=['POST'])
 def delete_from_info():
     if request.method == 'POST':
@@ -207,22 +243,8 @@ def delete_from_info():
     return redirect(url_for('begin'))
 
 
-# already logged in
-# @app.route('/home') # This function is for the home page of the website once the user has logged in
-# def home():
-#     isAdmin = False
-#     if 'admin' in session:  # change page layout depending on admin privs
-#         isAdmin = True
 
-#     loggedIn, first_name = getLoginDetails() # Helper function to dispay the user's name on the home page
- 
-#     with sqlite3.connect('store.db') as conn: # Connects to database and displays the products
-#         cur = conn.cursor()
-#         cur.execute('SELECT product_id, product_name, inventory, price, image FROM product')
-#         itemData = cur.fetchall()
-#     itemData = parse(itemData) 
-
-#     return render_template('index.html', itemData=itemData, loggedIn=loggedIn, first_name=first_name.title(), isAdmin=isAdmin) # sets the current frame to index.html w/ the user's name displayed at the top
+    
 
 
 if __name__ == '__main__':

@@ -3,8 +3,8 @@ import sqlite3
 
 conn = sqlite3.connect('applications.db')
 
-conn.execute('''DROP TABLE info''')
-conn.execute('''DROP TABLE status''')
+# conn.execute('''DROP TABLE info''')
+# conn.execute('''DROP TABLE status''')
 
 conn.execute('''CREATE TABLE IF NOT EXISTS info
             (app_id VARCHAR(50) PRIMARY KEY NOT NULL,
@@ -20,6 +20,14 @@ conn.execute('''CREATE TABLE IF NOT EXISTS status
             second VARCHAR(50),
             extra VARCHAR(50),
             offer VARCHAR(50) )''')
+
+conn.execute('''CREATE TABLE IF NOT EXISTS assessments
+            (app_id VARCHAR(50) PRIMARY KEY NOT NULL,
+            deadline VARCHAR(50) NOT NULL''')
+
+conn.execute('''CREATE TABLE IF NOT EXISTS referrals
+            (app_id VARCHAR(50) PRIMARY KEY NOT NULL,
+            referrer VARCHAR(50) NOT NULL''')
 
 
 conn.close() 
