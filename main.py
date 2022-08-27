@@ -39,8 +39,7 @@ def begin():
                 WHERE i.company LIKE '%{}%' AND i.term LIKE '%{}%' AND s.status LIKE '%{}%' """.format(info_columns, search_fields["company"], search_fields["term"], search_fields["status"]), 
                 conn)
     app_data = app_info.to_dict('records')
-    print(len(app_data))
-    return render_template('index.html', app_data=app_data, search_fields=search_fields, colored=colored, field_colors=status_colors, field="Status")
+    return render_template('index.html', app_data=app_data, len=len(app_data), search_fields=search_fields, colored=colored, field_colors=status_colors, field="Status")
 
 
 # handles any search criteria
