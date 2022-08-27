@@ -15,8 +15,8 @@ app.secret_key = 'random string'
 status_colors = {"NTA" : "danger", "Submitted" : "primary", "Interviewing" : "warning", "Rejected" : "info", "Offer" : "success"}
 colored = False
 search_fields = {"company": "", "term": "", "status": ""}
-term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", }
-status_options = {"status_apply": "APPLY", "status_submit": "Submitted", "status_in_progress": "In Progress", "status_reject": "Rejected"}
+term_options = {"fall_2022": "Fall 2022", "winter_2023": "Winter 2023", "spring_2023": "Spring 2023", "summer_2023": "Summer 2023", "fall_2023": "Fall 2023", "general": "General"}
+status_options = {"status_apply": "NTA", "status_submit": "Submitted", "status_interview": "Interviewing", "status_reject": "Rejected", "status_offer": "Offer"}
 tbl_info = {"Application ID": 'app_id', "Company": 'company', "Role": 'role', "Term": 'term'}
 tbl_status = {"Application ID": "app_id", "Date Applied": "date_applied", "Status": "status", "First Interview": "`first`", "Second Interview": "second", "Extra Interviews": "extra", "Offer": "offer"}
 blank_val = "-"
@@ -39,6 +39,7 @@ def begin():
                 WHERE i.company LIKE '%{}%' AND i.term LIKE '%{}%' AND s.status LIKE '%{}%' """.format(info_columns, search_fields["company"], search_fields["term"], search_fields["status"]), 
                 conn)
     app_data = app_info.to_dict('records')
+    print(len(app_data))
     return render_template('index.html', app_data=app_data, search_fields=search_fields, colored=colored, field_colors=status_colors, field="Status")
 
 
@@ -76,7 +77,7 @@ def insert_page():
                 FROM info as i LEFT JOIN status as s ON i.app_id = s.app_id """.format(info_columns), 
                 conn)
     app_data = app_info.to_dict('records')
-    return render_template('insert.html', app_data=app_data)
+    return render_template('insert.html', app_data=app_data, term_options=term_options, status_options=status_options)
 
 
 # inserts new records
