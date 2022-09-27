@@ -186,11 +186,6 @@ def edit():
         second = request.form["Second Interview"]
         extra = request.form["Extra Interviews"]
         offer = request.form["Offer"] 
-        # assessment = request.form["Assessment"] if request.form["Assessment"] != "None" else "NULL"
-        # first = request.form["First Interview"] if request.form["First Interview"] != "None" else "NULL"
-        # second = request.form["Second Interview"] if request.form["Second Interview"] != "None" else "NULL"
-        # extra = request.form["Extra Interviews"] if request.form["Extra Interviews"] != "None" else "NULL"
-        # offer = request.form["Offer"] if request.form["Offer"] != "None" else "NULL"
         with sqlite3.connect('applications.db') as conn: # update status table with relevant selections
             cur = conn.cursor()
             cur.execute(""" UPDATE status as s 
