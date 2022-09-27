@@ -21,8 +21,8 @@ tbl_info = {"Application ID": 'app_id', "Company": 'company', "Role": 'role', "T
 tbl_status = {"Application ID": "app_id", "Date Applied": "date_applied", "Status": "status", "First Interview": "`first`", "Second Interview": "second", "Extra Interviews": "extra", "Offer": "offer"}
 blank_val = "-"
 info_columns = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status"
-specific_app_cols = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as Offer"
-edit_fields = {"First Interview": ("Scheduled", "Completed"), "Second Interview": ("Scheduled", "Completed"), "Extra Interviews": ("Scheduled", "Completed"), "Offer": ("Accepted", "Rejected")}
+specific_app_cols = "i.company as Company, i.app_id as 'ID', i.role as Role, i.term as Term, s.date_applied as 'Date Applied', s.status as Status, s.assessment as 'Assessment', s.first as 'First Interview', s.second as 'Second Interview', s.extra as 'Extra Interviews', s.offer as Offer"
+edit_fields = {"Assessment": ('Assigned', 'Completed'), "First Interview": ("Scheduled", "Completed"), "Second Interview": ("Scheduled", "Completed"), "Extra Interviews": ("Scheduled", "Completed"), "Offer": ("Accepted", "Rejected")}
 
 # initial page of the website with no filtering (all records)
 @app.route('/', methods=['POST', 'GET'])
@@ -181,15 +181,21 @@ def edit_page():
 def edit():
     if request.method == 'POST':
         app_id = request.args.get('app_id') # get the app ID from HTML and request
+        assessment = request.form["Assessment"]
         first = request.form["First Interview"]
         second = request.form["Second Interview"]
         extra = request.form["Extra Interviews"]
-        offer = request.form["Offer"]
+        offer = request.form["Offer"] 
+        # assessment = request.form["Assessment"] if request.form["Assessment"] != "None" else "NULL"
+        # first = request.form["First Interview"] if request.form["First Interview"] != "None" else "NULL"
+        # second = request.form["Second Interview"] if request.form["Second Interview"] != "None" else "NULL"
+        # extra = request.form["Extra Interviews"] if request.form["Extra Interviews"] != "None" else "NULL"
+        # offer = request.form["Offer"] if request.form["Offer"] != "None" else "NULL"
         with sqlite3.connect('applications.db') as conn: # update status table with relevant selections
             cur = conn.cursor()
             cur.execute(""" UPDATE status as s 
-                    SET first='{}', second='{}', extra='{}', offer='{}'
-                    WHERE s.app_id = '{}' """.format(first, second, extra, offer, app_id))                
+                    SET assessment='{}', first='{}', second='{}', extra='{}', offer='{}'
+                    WHERE s.app_id = '{}' """.format(assessment, first, second, extra, offer, app_id))                
             conn.commit()
         update_status(app_id)
     return redirect(url_for('app_page', app_id=app_id))
@@ -203,12 +209,18 @@ def update_status(app_id):
                 FROM status as s
                 WHERE s.app_id = '{}' """.format(app_id, ), 
                 conn)
+        app_assess = pd.read_sql(
+            """ SELECT s.assessment
+                FROM status as s
+                WHERE s.app_id = '{}' """.format(app_id, ), 
+                conn)
         app_date = pd.read_sql(
              """ SELECT s.date_applied 
                 FROM status as s
                 WHERE s.app_id = '{}' """.format(app_id, ), 
                 conn)
     app_list = app_status.to_dict('records')[0]
+    app_assess = app_assess.to_dict('records')[0]
     app_date = app_date.to_dict('records')[0]
     status_update = ""
     if app_list['offer'] == "Extended" or app_list['offer'] == "Accepted":
@@ -217,6 +229,8 @@ def update_status(app_id):
         status_update = "Rejected"
     elif all([value != 'None' for value in app_list.values()]):
         status_update = "Interviewing"
+    elif app_assess['assessment'] != 'None':
+        status_update = "Assessment"
     elif app_date['date_applied'] != "":
         status_update = "Submitted"
     else:
