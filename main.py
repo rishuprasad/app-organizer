@@ -253,7 +253,6 @@ def delete_from_info():
 
 
 
-    
 
 
 if __name__ == '__main__':
