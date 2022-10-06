@@ -222,7 +222,7 @@ def update_status(app_id):
         status_update = "Offer"
     elif app_list['offer'] == "Rejected":
         status_update = "Rejected"
-    elif all([value != 'None' for value in app_list.values()]):
+    elif any([value != 'None' for value in app_list.values()]):
         status_update = "Interviewing"
     elif app_assess['assessment'] != 'None':
         status_update = "Assessment"
@@ -252,7 +252,7 @@ def delete_from_info():
     return redirect(url_for('begin'))
 
 
-
+ 
 
 
 if __name__ == '__main__':
